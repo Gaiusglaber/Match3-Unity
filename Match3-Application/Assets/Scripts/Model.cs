@@ -6,41 +6,34 @@ namespace Match3.Model
 {
     public class Model : ComponentsModelViewController
     {
-        public struct Token
-        {
-            Sprite sprite;
-            TOKEN_TYPE type;
-        }
         [SerializeField]private enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
-        [SerializeField] public int gridHeight = 10;
-        [SerializeField] public int gridWidth = 10;
-        [SerializeField] public List<Token> tokens= new List<Token>();
+        [SerializeField][Range(5,8)] public int gridHeight = 10;
+        [SerializeField][Range(3, 5)] public int gridWidth = 10;
+        [SerializeField] public GameObject[,] tokens;
         [SerializeField] public GameObject[,] grid;
         [SerializeField] public GameObject tilePrefab;
+        [SerializeField] public GameObject[] tokenPrefab;
 
         private void Start()
         {
+            grid = new GameObject[model.gridHeight, model.gridWidth];
+            tokens = new GameObject[model.gridHeight, model.gridWidth];
             InstantiateGrid();
         }
         private void InstantiateGrid()
         {
-            model.grid = new GameObject[model.gridHeight, model.gridWidth];
             for (int i = 0; i < model.gridHeight; i++)
             {
                 for (int j = 0; j < model.gridWidth; j++)
                 {
                     GameObject tile;
                     Vector2 pos = new Vector2(j, i);
-                    tile = Instantiate(model.tilePrefab, pos, Quaternion.identity);
+                    tile = Instantiate(tilePrefab, pos, Quaternion.identity);
                     tile.transform.parent = view.transform;
+                    GameObject token;
+                    token = Instantiate(tokenPrefab[Random.Range(0,tokenPrefab.Length)], pos, Quaternion.identity);
+                    token.transform.parent = view.transform;
                 }
-            }
-        }
-        private void InstantiateTokens()
-        {
-            foreach(var element in grid)
-            {
-
             }
         }
     }
