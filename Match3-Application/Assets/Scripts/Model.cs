@@ -6,6 +6,7 @@ namespace Match3.Model
 {
     public class Model : ComponentsModelViewController
     {
+        [SerializeField] public LayerMask layer;
         [SerializeField]private enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
         [SerializeField][Range(5,8)] public int gridHeight = 10;
         [SerializeField][Range(3, 5)] public int gridWidth = 10;
@@ -33,6 +34,8 @@ namespace Match3.Model
                     GameObject token;
                     token = Instantiate(tokenPrefab[Random.Range(0,tokenPrefab.Length)], pos, Quaternion.identity);
                     token.transform.parent = view.transform;
+                    token.name = i + ","+ j;
+                    tokens[i, j] = token;
                 }
             }
         }
