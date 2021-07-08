@@ -5,26 +5,31 @@ namespace Match3.Model
 {
     public class Model : ComponentsModelViewController
     {
+        public struct Token
+        {
+            public GameObject prefab;
+            public Vector2 pos;
+            public TOKEN_TYPE type;
+        }
         [SerializeField] [Range(0f, 0.5f)] public float spawnTime;
         [SerializeField] [Range(2, 6)] public int minChainLength;
         [SerializeField] public Vector2 firstTouchPosition;
-        [SerializeField] public List<GameObject> tokensSelection= new List<GameObject>();
+        [SerializeField] public List<Token> tokensSelection= new List<Token>();
         [SerializeField] public LayerMask layer;
         [SerializeField] public int score=0;
         [SerializeField] public int moves = 10;
         [SerializeField] public float time;
-        [SerializeField]private enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
-        [SerializeField][Range(5,8)] public int gridHeight = 10;
-        [SerializeField][Range(3, 5)] public int gridWidth = 10;
-        [SerializeField] public GameObject[,] tokens;
+        [SerializeField] public enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
+        [SerializeField] [Range(5,8)] public int gridHeight = 10;
+        [SerializeField] [Range(3, 5)] public int gridWidth = 10;
+        [SerializeField] public List<Token> tokens=new List<Token>();
         [SerializeField] public GameObject[,] grid;
         [SerializeField] public GameObject tilePrefab;
-        [SerializeField] public GameObject[] tokenPrefab;
+        [SerializeField] public GameObject[] tokenPrefabs;
 
         private void Start()
         {
             grid = new GameObject[model.gridHeight, model.gridWidth];
-            tokens = new GameObject[model.gridHeight, model.gridWidth];
             InstantiateGrid();
             StartCoroutine(InstantiateTokensNormal());
         }
@@ -54,11 +59,13 @@ namespace Match3.Model
         }
         void InstantiateToken(int i,int j)
         {
-            GameObject token;
-            token = Instantiate(tokenPrefab[Random.Range(0, tokenPrefab.Length)], new Vector2(j, i), Quaternion.identity);
-            token.transform.parent = view.transform;
-            token.name = i + "," + j;
-            tokens[i, j] = token;
+            Token token;
+            token.pos = new Vector2(j, i);
+            token.type = (TOKEN_TYPE)Random.Range(0, tokenPrefabs.Length);
+            token.prefab = Instantiate(tokenPrefabs[(int)token.type], token.pos, Quaternion.identity);
+            token.prefab.transform.parent = view.transform;
+            token.prefab.name = i + "," + j;
+            tokens.Add(token);
         }
     }
 }

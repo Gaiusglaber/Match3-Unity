@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Canvas
+  - Orange
+  - Blue
+  - Red
+  - Pink
+  - White
+  - Brown
   layers:
   - Default
   - TransparentFX
