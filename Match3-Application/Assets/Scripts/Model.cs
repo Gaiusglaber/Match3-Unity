@@ -5,7 +5,8 @@ namespace Match3.Model
 {
     public class Model : ComponentsModelViewController
     {
-        public struct Token
+
+        public class Token
         {
             public GameObject prefab;
             public Vector2 pos;
@@ -23,13 +24,10 @@ namespace Match3.Model
         [SerializeField] [Range(5,8)] public int gridHeight = 10;
         [SerializeField] [Range(3, 5)] public int gridWidth = 10;
         [SerializeField] public List<Token> tokens=new List<Token>();
-        [SerializeField] public GameObject[,] grid;
         [SerializeField] public GameObject tilePrefab;
         [SerializeField] public GameObject[] tokenPrefabs;
-
         private void Start()
         {
-            grid = new GameObject[model.gridHeight, model.gridWidth];
             InstantiateGrid();
             StartCoroutine(InstantiateTokensNormal());
         }
@@ -59,7 +57,7 @@ namespace Match3.Model
         }
         void InstantiateToken(int i,int j)
         {
-            Token token;
+            Token token= new Token();
             token.pos = new Vector2(j, i);
             token.type = (TOKEN_TYPE)Random.Range(0, tokenPrefabs.Length);
             token.prefab = Instantiate(tokenPrefabs[(int)token.type], token.pos, Quaternion.identity);

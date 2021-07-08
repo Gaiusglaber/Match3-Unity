@@ -1054,7 +1054,7 @@ MonoBehaviour:
   model: {fileID: 1872762668}
   view: {fileID: 686861934}
   controller: {fileID: 156041107}
-  spawnTime: 0.167
+  spawnTime: 0.067
   minChainLength: 2
   firstTouchPosition: {x: 0, y: 0}
   layer:
