@@ -13,20 +13,24 @@ namespace Match3.Controller
             if (Physics2D.OverlapPoint(model.firstTouchPosition, model.layer) && Input.GetMouseButton(0)&&IsSpawnDone())
             {
                 GameObject token = Physics2D.OverlapPoint(model.firstTouchPosition, model.layer).gameObject;
-                if (!IsOnList(token)&&IsTheSameType(token)&&IsAdyacent(token)) {
+                if (!IsOnList(token)&&IsTheSameType(token)&&CanAdd(token)) {
                     AddToList(token);
-                }/*
-                else if (IsOnList(token))
+                    token.GetComponent<SpriteRenderer>().color = Color.red;
+                }else if (IsOnList(token) && CanAdd(token))
                 {
-                    model.tokens.Remove(model.tokens.Find(o => o.prefab == token));
-                }*/
+                    model.tokensSelection[model.tokensSelection.Count-1].prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    model.tokensSelection.RemoveAt(model.tokensSelection.Count-1);
+                }
             }else if (Input.GetMouseButtonUp(0))
             {
                 if (model.minChainLength <= model.tokensSelection.Count)
                 {
-                    StartCoroutine("DestroyTokens");
-                    StartCoroutine("ArrangeTokens");
+                    DestroyTokens();
                     model.moves--;
+                }
+                foreach (var token in model.tokensSelection)
+                {
+                    token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
                 }
                 model.tokensSelection.Clear();
             }
@@ -42,19 +46,54 @@ namespace Match3.Controller
             token.pos = Physics2D.OverlapPoint(model.firstTouchPosition, model.layer).gameObject.transform.position;
             token.type=LookForID(token.prefab);
             model.tokensSelection.Add(token);
-            //Debug.Log("Added");
         }
         private bool IsSpawnDone()
         {
             return model.time > (model.spawnTime * (model.gridHeight + model.gridWidth));
         }
+        private bool CanAdd(GameObject tokenObject)
+        {
+            if (model.tokensSelection.Count == 0)
+            {
+                return true;
+            }
+            else if (IsAdyacent(tokenObject))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         private bool IsAdyacent(GameObject tokenObject)
         {
-            return true;
+            bool sameY = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 0;
+            bool sameX = tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 0;
+            bool left =tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == -1;
+            bool right = tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 1;
+            bool up = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 1;
+            bool down = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == -1;
+            bool topLeft=left&&up;
+            bool topRight=right&&up;
+            bool buttomLeft=left&&down;
+            bool buttomRight=right&&down;
+            return (left&&sameY)||(right && sameY)|| (up && sameX )|| (down && sameX)|| topLeft||topRight||buttomLeft||buttomRight;
+        }
+        private bool IsOutsideOfGrid(GameObject tokenObject)
+        {
+            return ((tokenObject.transform.position.x != 0 || tokenObject.transform.position.x != model.gridWidth) || (tokenObject.transform.position.y != 0 || tokenObject.transform.position.y != model.gridHeight));
         }
         private bool IsTheSameType(GameObject tokenObject)
         {
-            return true;
+            if (model.tokensSelection.Count == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return tokenObject.CompareTag(model.tokensSelection[0].prefab.tag);
+            }
         }
         Model.Model.TOKEN_TYPE LookForID(GameObject token)
         {
@@ -71,7 +110,7 @@ namespace Match3.Controller
         {
             return (Model.Model.TOKEN_TYPE)Random.Range(0, model.tokenPrefabs.Length);
         }
-        IEnumerator DestroyTokens()
+        void DestroyTokens()
         {
             foreach (var token in model.tokens)
             {
@@ -80,59 +119,42 @@ namespace Match3.Controller
                     if (token.pos == tokenList.pos)
                     {
                         Destroy(token.prefab);
+                        token.prefab=Instantiate(model.tokenPrefabs[(int)InstantiateNewID()],token.pos,Quaternion.identity);
                     }
                 }
             }
-            yield return null;
         }
-        IEnumerator ArrangeTokens()
+        /*
+        void DeleteUpwards(int i,int j)
         {
-            yield return new WaitForSeconds(0.1f); /* DestroyTokens() is a double for so it takes more miliseconds to get to the next coroutine
-                                                            and doesnt get to read the Object that DestroyToken() destroys*/
-            int j=-1;
-            bool done = false;
-            for (int i=0;i< model.tokens.Count; i++)
+            int nullCount = 0;
+            while (i< model.gridHeight)
             {
-                if (model.tokens[i].prefab == null)
+                if (model.tokens[i,j].prefab != null)
                 {
-                    if (!done)
-                    {
-                        j = i;
-                        done = true;
-                    }
-                    StartCoroutine(DeleteUpwards(model.tokens[i]));
-                    StartCoroutine(SpawnNewToken(model.tokens[i]));
-                    j = i;
+                    model.tokens[i,j].pos = new Vector2(j,i-nullCount);
+                    model.tokens[i,j].prefab.transform.position = model.tokens[i,j].pos;
+                    model.tokens[i,j].prefab.name = i-nullCount + "," + j;
+                    model.tokens[i, j] = model.tokens[i - nullCount, j];
                 }
-            }
-            yield return null;
-        }
-        IEnumerator DeleteUpwards(Model.Model.Token tokenDestroyed)
-        {
-            yield return new WaitForSeconds(0.2f);
-            int nullCount = 1;
-            //toDestroyed.Reverse();
-            for (int i=0;i< model.tokens.Count; i++)
-            {
-                if ((model.tokens[i].pos.x == tokenDestroyed.pos.x) && (model.tokens[i].pos.y > tokenDestroyed.pos.y)&& model.tokens[i].prefab!=null)
+                else
                 {
-                    model.tokens[i].pos = new Vector2(model.tokens[i].pos.x, model.tokens[i].pos.y - 1);
-                    model.tokens[i].prefab.transform.position = model.tokens[i].pos;
-                    model.tokens[i].prefab.name = model.tokens[i].pos.y + "," + model.tokens[i].pos.x;
+                    nullCount++;
                 }
+                i++;
             }
-            yield return null;
         }
-        IEnumerator SpawnNewToken(Model.Model.Token tokenDestroyed)
+        void SpawnNewToken(Model.Model.Token tokenDestroyed,int j)
         {
-            yield return new WaitForSeconds(0.4f);
+            float yPos = 0;
+
             tokenDestroyed.prefab = new GameObject();
             tokenDestroyed.pos = new Vector2(tokenDestroyed.pos.x, model.gridHeight - 1);
             tokenDestroyed.type = InstantiateNewID();
             tokenDestroyed.prefab = Instantiate(model.tokenPrefabs[(int)tokenDestroyed.type], tokenDestroyed.pos, Quaternion.identity);
             tokenDestroyed.prefab.name = tokenDestroyed.pos.y + "," + tokenDestroyed.pos.x;
             tokenDestroyed.prefab.transform.parent = view.transform;
-            yield return null;
-        }
+            model.tokens[model.gridHeight - 1, j] = tokenDestroyed;
+        }*/
     }
 }

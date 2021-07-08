@@ -23,11 +23,12 @@ namespace Match3.Model
         [SerializeField] public enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
         [SerializeField] [Range(5,8)] public int gridHeight = 10;
         [SerializeField] [Range(3, 5)] public int gridWidth = 10;
-        [SerializeField] public List<Token> tokens=new List<Token>();
+        [SerializeField] public Token[,] tokens;
         [SerializeField] public GameObject tilePrefab;
         [SerializeField] public GameObject[] tokenPrefabs;
         private void Start()
         {
+            tokens = new Token[gridHeight, gridWidth];
             InstantiateGrid();
             StartCoroutine(InstantiateTokensNormal());
         }
@@ -63,7 +64,7 @@ namespace Match3.Model
             token.prefab = Instantiate(tokenPrefabs[(int)token.type], token.pos, Quaternion.identity);
             token.prefab.transform.parent = view.transform;
             token.prefab.name = i + "," + j;
-            tokens.Add(token);
+            tokens[i,j]=token;
         }
     }
 }
