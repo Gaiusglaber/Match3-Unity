@@ -30,6 +30,7 @@ namespace Match3.Controller
         {
             if (i < model.gridHeight-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i + 1, j].prefab.tag))
             {
+                model.tokens[i + 1, j].prefab.GetComponent<SpriteRenderer>().color = Color.red;
                 model.tokensSelection.Add(model.tokens[i + 1, j]);
                 GoOverGrid(i + 1, j,ref areMatches);
             }
@@ -41,6 +42,7 @@ namespace Match3.Controller
             }
             if (j < model.gridWidth-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i, j + 1].prefab.tag))
             {
+                model.tokens[i, j+1].prefab.GetComponent<SpriteRenderer>().color = Color.red;
                 model.tokensSelection.Add(model.tokens[i, j + 1]);
                 GoOverGrid(i, j + 1,ref areMatches);
             }
@@ -52,10 +54,18 @@ namespace Match3.Controller
             }
             else if (model.tokensSelection.Count > 1)
             {
+                foreach (var token in model.tokensSelection)
+                {
+                    token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                }
                 model.tokensSelection.Clear();
             }
             else
             {
+                foreach (var token in model.tokensSelection)
+                {
+                    token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                }
                 model.tokensSelection.Clear();
             }
         }
