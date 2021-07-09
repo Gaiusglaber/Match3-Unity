@@ -98,13 +98,16 @@ namespace Match3.Controller
                     DestroyTokens();
                     model.instantiateFinalised = true;
                     model.moves--;
-                    if (model.moves < model.minMovesAudioPitch)
+                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
+                    if (model.moves==0)
+                    {
+                        GameManager.GetInstance().EndGame();
+                    }
+                    else if (model.moves < model.minMovesAudioPitch)
                     {
                         model.audioSrc.pitch = 1.3f; //if this proyect has a Wwise implementation this would be more smoother
                     }
                     model.audioSrc.PlayOneShot(model.goodInput);
-                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
-
                 }
                 else
                 {

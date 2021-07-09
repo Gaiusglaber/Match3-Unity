@@ -12,6 +12,7 @@ namespace Match3.Model
             public Vector2 pos;
             public TOKEN_TYPE type;
         }
+        public IEnumerator actualCoroutine = null;
         [SerializeField] public int minMovesAudioPitch = 5;
         [SerializeField] public AudioSource audioSrc;
         [SerializeField] public AudioClip wrongInput, goodInput,selected;
@@ -22,7 +23,8 @@ namespace Match3.Model
         [SerializeField] public LayerMask layer;
         [SerializeField] public int score=0;
         [SerializeField] [Range(5, 15)] public int scoreMultiplier= 15;
-        [SerializeField] public int moves = 10;
+        [SerializeField] public int initialMoves = 10;
+        [SerializeField] public int moves;
         [SerializeField] public bool gameOver = false;
         [SerializeField] public bool control;
         [SerializeField] public bool user=true;
@@ -37,6 +39,11 @@ namespace Match3.Model
         [SerializeField] public GameObject[] tokenPrefabs;
         private void Start()
         {
+            LoadData();
+        }
+        public void LoadData()
+        {
+            moves = initialMoves;
             wrongInput = Resources.Load<AudioClip>("WrongInput");
             goodInput = Resources.Load<AudioClip>("GoodInput");
             selected = Resources.Load<AudioClip>("Selected");
