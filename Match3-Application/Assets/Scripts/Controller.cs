@@ -6,6 +6,10 @@ namespace Match3.Controller
 {
     public class Controller : ComponentsModelViewController
     {
+        private void Start()
+        {
+            
+        }
         void CheckIfIsMatches()
         {
             bool areMatches = false;
@@ -69,20 +73,16 @@ namespace Match3.Controller
                 model.tokensSelection.Clear();
             }
         }
-        private void Update()
+        private void InputSelection()
         {
-            if (model.instantiateFinalised)
-            {
-                CheckIfIsMatches();
-            }
-            model.time += Time.deltaTime;
             model.firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if (Physics2D.OverlapPoint(model.firstTouchPosition, model.layer) && Input.GetMouseButton(0) && IsSpawnDone())
+            if (Physics2D.OverlapPoint(model.firstTouchPosition, model.layer) && Input.GetMouseButton(0))
             {
                 GameObject token = Physics2D.OverlapPoint(model.firstTouchPosition, model.layer).gameObject;
                 if (!IsOnList(token) && IsTheSameType(token) && CanAdd(token))
                 {
                     AddToList(token);
+                    model.audioSrc.PlayOneShot(model.selected);
                     token.GetComponent<SpriteRenderer>().color = Color.red;
                 }
                 else if (IsOnList(token) && CanAdd(token))
@@ -98,13 +98,34 @@ namespace Match3.Controller
                     DestroyTokens();
                     model.instantiateFinalised = true;
                     model.moves--;
-                    model.score += model.tokensSelection.Count * 15;
+                    if (model.moves < model.minMovesAudioPitch)
+                    {
+                        model.audioSrc.pitch = 1.3f; //if this proyect has a Wwise implementation this would be more smoother
+                    }
+                    model.audioSrc.PlayOneShot(model.goodInput);
+                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
+
+                }
+                else
+                {
+                    model.audioSrc.PlayOneShot(model.wrongInput);
                 }
                 foreach (var token in model.tokensSelection)
                 {
                     token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
                 }
                 model.tokensSelection.Clear();
+            }
+        }
+        private void Update()
+        {
+            if (model.instantiateFinalised)
+            {
+                CheckIfIsMatches();
+            }
+            if (!model.instantiateFinalised&&model.firstInstantiateFinalised)
+            {
+                InputSelection();
             }
         } 
         private bool IsOnList(GameObject tokenObject)
@@ -118,10 +139,6 @@ namespace Match3.Controller
             token.pos = Physics2D.OverlapPoint(model.firstTouchPosition, model.layer).gameObject.transform.position;
             token.type=LookForID(token.prefab);
             model.tokensSelection.Add(token);
-        }
-        private bool IsSpawnDone()
-        {
-            return model.time > (model.spawnTime * (model.gridHeight + model.gridWidth));
         }
         private bool CanAdd(GameObject tokenObject)
         {
@@ -157,10 +174,6 @@ namespace Match3.Controller
             {
                 return (left && sameY)|| (right && sameY) || (up && sameX) || (down && sameX);
             }
-        }
-        private bool IsOutsideOfGrid(GameObject tokenObject)
-        {
-            return ((tokenObject.transform.position.x != 0 || tokenObject.transform.position.x != model.gridWidth) || (tokenObject.transform.position.y != 0 || tokenObject.transform.position.y != model.gridHeight));
         }
         private bool IsTheSameType(GameObject tokenObject)
         {

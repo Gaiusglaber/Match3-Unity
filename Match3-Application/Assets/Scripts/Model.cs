@@ -12,6 +12,9 @@ namespace Match3.Model
             public Vector2 pos;
             public TOKEN_TYPE type;
         }
+        [SerializeField] public int minMovesAudioPitch = 5;
+        [SerializeField] public AudioSource audioSrc;
+        [SerializeField] public AudioClip wrongInput, goodInput,selected;
         [SerializeField] [Range(0f, 0.5f)] public float spawnTime;
         [SerializeField] [Range(2, 6)] public int minChainLength;
         [SerializeField] public Vector2 firstTouchPosition;
@@ -20,7 +23,7 @@ namespace Match3.Model
         [SerializeField] public int score=0;
         [SerializeField] [Range(5, 15)] public int scoreMultiplier= 15;
         [SerializeField] public int moves = 10;
-        [SerializeField] public float time;
+        [SerializeField] public bool gameOver = false;
         [SerializeField] public bool control;
         [SerializeField] public bool user=true;
         [SerializeField] public bool IA = false;
@@ -34,6 +37,10 @@ namespace Match3.Model
         [SerializeField] public GameObject[] tokenPrefabs;
         private void Start()
         {
+            wrongInput = Resources.Load<AudioClip>("WrongInput");
+            goodInput = Resources.Load<AudioClip>("GoodInput");
+            selected = Resources.Load<AudioClip>("Selected");
+            audioSrc = GetComponent<AudioSource>();
             control = user;
             tokens = new Token[gridHeight, gridWidth];
             InstantiateGrid();
