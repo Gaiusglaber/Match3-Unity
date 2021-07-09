@@ -336,7 +336,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 2.0507965, y: 3.576706}
+  m_AnchoredPosition: {x: 2.0507812, y: 3.576706}
   m_SizeDelta: {x: 12.5813, y: 20.48}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &483921856
@@ -1068,6 +1068,7 @@ MonoBehaviour:
   user: 1
   IA: 0
   instantiateFinalised: 0
+  firstInstantiateFinalised: 0
   gridHeight: 8
   gridWidth: 5
   tilePrefab: {fileID: 1453699946768273391, guid: bacddd2cfdaaa6d498c76ffff55d2293, type: 3}

@@ -6,30 +6,32 @@ namespace Match3.Controller
 {
     public class Controller : ComponentsModelViewController
     {
-
-        bool CheckIfIsMatches()
+        void CheckIfIsMatches()
         {
             bool areMatches = false;
-            if (model.instantiateFinalised)
+            if (model.instantiateFinalised&&model.firstInstantiateFinalised)
             {
                 for (int i = 0; i < model.gridHeight; i++)
                 {
                     for (int j = 0; j < model.gridWidth; j++)
                     {
                         model.tokensSelection.Add(model.tokens[i, j]);
-                        GoOverGrid(i, j,areMatches);
+                        GoOverGrid(i, j,ref areMatches);
                     }
                 }
                 model.instantiateFinalised = false;
             }
-            return areMatches;
+            if (areMatches)
+            {
+                model.instantiateFinalised = true;
+            }
         }
-        private void GoOverGrid(int i,int j,bool areMatches)
+        private void GoOverGrid(int i,int j,ref bool areMatches)
         {
             if (i < model.gridHeight-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i + 1, j].prefab.tag))
             {
                 model.tokensSelection.Add(model.tokens[i + 1, j]);
-                GoOverGrid(i + 1, j,areMatches);
+                GoOverGrid(i + 1, j,ref areMatches);
             }
             else if (model.minChainLength <= model.tokensSelection.Count)
             {
@@ -37,14 +39,10 @@ namespace Match3.Controller
                 model.tokensSelection.Clear();
                 areMatches = true;
             }
-            else if(model.tokensSelection.Count>1)
-            {
-                model.tokensSelection.Clear();
-            }
             if (j < model.gridWidth-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i, j + 1].prefab.tag))
             {
                 model.tokensSelection.Add(model.tokens[i, j + 1]);
-                GoOverGrid(i, j + 1,areMatches);
+                GoOverGrid(i, j + 1,ref areMatches);
             }
             else if (model.minChainLength <= model.tokensSelection.Count)
             {
@@ -63,28 +61,32 @@ namespace Match3.Controller
         }
         private void Update()
         {
-            while (!CheckIfIsMatches())
+            if (model.instantiateFinalised)
             {
-
+                CheckIfIsMatches();
             }
             model.time += Time.deltaTime;
             model.firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            if (Physics2D.OverlapPoint(model.firstTouchPosition, model.layer) && Input.GetMouseButton(0)&&IsSpawnDone())
+            if (Physics2D.OverlapPoint(model.firstTouchPosition, model.layer) && Input.GetMouseButton(0) && IsSpawnDone())
             {
                 GameObject token = Physics2D.OverlapPoint(model.firstTouchPosition, model.layer).gameObject;
-                if (!IsOnList(token)&&IsTheSameType(token)&&CanAdd(token)) {
+                if (!IsOnList(token) && IsTheSameType(token) && CanAdd(token))
+                {
                     AddToList(token);
                     token.GetComponent<SpriteRenderer>().color = Color.red;
-                }else if (IsOnList(token) && CanAdd(token))
-                {
-                    model.tokensSelection[model.tokensSelection.Count-1].prefab.GetComponent<SpriteRenderer>().color = Color.white;
-                    model.tokensSelection.RemoveAt(model.tokensSelection.Count-1);
                 }
-            }else if (Input.GetMouseButtonUp(0))
+                else if (IsOnList(token) && CanAdd(token))
+                {
+                    model.tokensSelection[model.tokensSelection.Count - 1].prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    model.tokensSelection.RemoveAt(model.tokensSelection.Count - 1);
+                }
+            }
+            else if (Input.GetMouseButtonUp(0))
             {
                 if (model.minChainLength <= model.tokensSelection.Count)
                 {
                     DestroyTokens();
+                    model.instantiateFinalised = true;
                     model.moves--;
                     model.score += model.tokensSelection.Count * 15;
                 }

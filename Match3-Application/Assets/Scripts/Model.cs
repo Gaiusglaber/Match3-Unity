@@ -25,6 +25,7 @@ namespace Match3.Model
         [SerializeField] public bool user=true;
         [SerializeField] public bool IA = false;
         [SerializeField] public bool instantiateFinalised = false;
+        [SerializeField] public bool firstInstantiateFinalised = false;
         [SerializeField] public enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
         [SerializeField] [Range(5,8)] public int gridHeight = 10;
         [SerializeField] [Range(3, 5)] public int gridWidth = 10;
@@ -62,6 +63,7 @@ namespace Match3.Model
                 }
             }
             instantiateFinalised = true;
+            firstInstantiateFinalised = true;
         }
         void InstantiateToken(int i,int j)
         {
