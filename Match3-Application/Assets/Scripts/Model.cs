@@ -1,11 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 namespace Match3.Model
 {
     public class Model : ComponentsModelViewController
     {
-
         public class Token
         {
             public GameObject prefab;
@@ -18,8 +18,13 @@ namespace Match3.Model
         [SerializeField] public List<Token> tokensSelection= new List<Token>();
         [SerializeField] public LayerMask layer;
         [SerializeField] public int score=0;
+        [SerializeField] [Range(5, 15)] public int scoreMultiplier= 15;
         [SerializeField] public int moves = 10;
         [SerializeField] public float time;
+        [SerializeField] public bool control;
+        [SerializeField] public bool user=true;
+        [SerializeField] public bool IA = false;
+        [SerializeField] public bool instantiateFinalised = false;
         [SerializeField] public enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
         [SerializeField] [Range(5,8)] public int gridHeight = 10;
         [SerializeField] [Range(3, 5)] public int gridWidth = 10;
@@ -28,6 +33,7 @@ namespace Match3.Model
         [SerializeField] public GameObject[] tokenPrefabs;
         private void Start()
         {
+            control = user;
             tokens = new Token[gridHeight, gridWidth];
             InstantiateGrid();
             StartCoroutine(InstantiateTokensNormal());
@@ -55,6 +61,7 @@ namespace Match3.Model
                     yield return new WaitForSeconds(spawnTime);
                 }
             }
+            instantiateFinalised = true;
         }
         void InstantiateToken(int i,int j)
         {

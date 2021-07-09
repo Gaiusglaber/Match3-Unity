@@ -6,8 +6,67 @@ namespace Match3.Controller
 {
     public class Controller : ComponentsModelViewController
     {
+
+        bool CheckIfIsMatches()
+        {
+            bool areMatches = false;
+            if (model.instantiateFinalised)
+            {
+                for (int i = 0; i < model.gridHeight; i++)
+                {
+                    for (int j = 0; j < model.gridWidth; j++)
+                    {
+                        model.tokensSelection.Add(model.tokens[i, j]);
+                        GoOverGrid(i, j,areMatches);
+                    }
+                }
+                model.instantiateFinalised = false;
+            }
+            return areMatches;
+        }
+        private void GoOverGrid(int i,int j,bool areMatches)
+        {
+            if (i < model.gridHeight-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i + 1, j].prefab.tag))
+            {
+                model.tokensSelection.Add(model.tokens[i + 1, j]);
+                GoOverGrid(i + 1, j,areMatches);
+            }
+            else if (model.minChainLength <= model.tokensSelection.Count)
+            {
+                DestroyTokens();
+                model.tokensSelection.Clear();
+                areMatches = true;
+            }
+            else if(model.tokensSelection.Count>1)
+            {
+                model.tokensSelection.Clear();
+            }
+            if (j < model.gridWidth-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i, j + 1].prefab.tag))
+            {
+                model.tokensSelection.Add(model.tokens[i, j + 1]);
+                GoOverGrid(i, j + 1,areMatches);
+            }
+            else if (model.minChainLength <= model.tokensSelection.Count)
+            {
+                DestroyTokens();
+                model.tokensSelection.Clear();
+                areMatches = true;
+            }
+            else if (model.tokensSelection.Count > 1)
+            {
+                model.tokensSelection.Clear();
+            }
+            else
+            {
+                model.tokensSelection.Clear();
+            }
+        }
         private void Update()
         {
+            while (!CheckIfIsMatches())
+            {
+
+            }
             model.time += Time.deltaTime;
             model.firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             if (Physics2D.OverlapPoint(model.firstTouchPosition, model.layer) && Input.GetMouseButton(0)&&IsSpawnDone())
@@ -27,6 +86,7 @@ namespace Match3.Controller
                 {
                     DestroyTokens();
                     model.moves--;
+                    model.score += model.tokensSelection.Count * 15;
                 }
                 foreach (var token in model.tokensSelection)
                 {
@@ -34,7 +94,7 @@ namespace Match3.Controller
                 }
                 model.tokensSelection.Clear();
             }
-        }
+        } 
         private bool IsOnList(GameObject tokenObject)
         {
             return model.tokensSelection.Exists(o => o.prefab == tokenObject);
@@ -57,7 +117,7 @@ namespace Match3.Controller
             {
                 return true;
             }
-            else if (IsAdyacent(tokenObject))
+            else if (IsAdyacent(tokenObject,model.user))
             {
                 return true;
             }
@@ -66,7 +126,7 @@ namespace Match3.Controller
                 return false;
             }
         }
-        private bool IsAdyacent(GameObject tokenObject)
+        private bool IsAdyacent(GameObject tokenObject,bool input)
         {
             bool sameY = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 0;
             bool sameX = tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 0;
@@ -78,7 +138,13 @@ namespace Match3.Controller
             bool topRight=right&&up;
             bool buttomLeft=left&&down;
             bool buttomRight=right&&down;
-            return (left&&sameY)||(right && sameY)|| (up && sameX )|| (down && sameX)|| topLeft||topRight||buttomLeft||buttomRight;
+            if (input) {
+                return (left && sameY) || (right && sameY) || (up && sameX) || (down && sameX)||topLeft || topRight || buttomLeft || buttomRight;
+            }
+            else
+            {
+                return (left && sameY)|| (right && sameY) || (up && sameX) || (down && sameX);
+            }
         }
         private bool IsOutsideOfGrid(GameObject tokenObject)
         {
