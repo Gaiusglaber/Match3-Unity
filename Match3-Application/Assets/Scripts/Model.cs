@@ -89,12 +89,17 @@ namespace Match3.Model
             //Instantiate all tiles placeholder in the input of the user *no parameters*
             for (int i = 0; i < model.gridHeight; i++)
             {
+                GameObject tile;
                 for (int j = 0; j < model.gridWidth; j++)
                 {
-                    GameObject tile;
                     Vector2 pos = new Vector2(j, i);
                     tile = Instantiate(tilePrefab, pos, Quaternion.identity);
                     tile.transform.parent = view.transform;
+                    if (i == 0)
+                    {
+                        tile.AddComponent<EdgeCollider2D>();
+                        tile.GetComponent<EdgeCollider2D>().offset = new Vector2(tile.GetComponent<EdgeCollider2D>().offset.x, -0.25f);
+                    }
                 }
             }
         }
@@ -120,7 +125,7 @@ namespace Match3.Model
             //i=y
             //j=x
             Token token= new Token();
-            token.pos = new Vector2(j, i);
+            token.pos = new Vector2(j, i+gridHeight);
             token.type = (TOKEN_TYPE)Random.Range(0, tokenPrefabs.Length);
             token.prefab = Instantiate(tokenPrefabs[(int)token.type], token.pos, Quaternion.identity);
             token.prefab.transform.parent = view.transform;

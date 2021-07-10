@@ -16,12 +16,19 @@ namespace Match3.Controller
             {
                 for (int j = 0; j < model.gridWidth; j++)
                 {
-                    if (!model.instantiateFinalised&& model.tokens[i, j].prefab!=null)
+                    if (!model.instantiateFinalised)
                     {
                         //Adds every element to the selection list
                         model.tokensSelection.Add(model.tokens[i, j]);
-                        model.tokens[i, j].prefab.GetComponent<SpriteRenderer>().color = Color.red;
-                        GoOverGrid(i, j);
+                        GoOverGridUp(model.tokens[i,j]);
+                        //model.tokensSelection.Clear();
+                        //model.tokensSelection.Add(model.tokens[i, j]);
+                        GoOverGridRight(model.tokens[i, j]);
+                        //model.tokensSelection.Clear();
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
             }
@@ -30,18 +37,131 @@ namespace Match3.Controller
                 model.firstInstantiateFinalised = false;
             }
         }
-        private void GoOverGrid(int i,int j)
+        bool StopMoving()
         {
+            if (model.instantiateFinalised)
+            {
+                bool stoped = true;
+                for (int i = 0; i < model.gridHeight; i++)
+                {
+                    for (int j = 0; j < model.gridWidth; j++)
+                    {
+                        float velocity = model.tokens[i, j].prefab.GetComponent<Rigidbody2D>().velocity.y;
+                        if (velocity!=0)
+                        {
+                            stoped = false;
+                            return false;
+                        }
+                    }
+                }
+                return stoped;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        void GoOverGridRight(Model.Model.Token tokenToAdd)
+        {
+            float rayCastDistance = 2f;
+            RaycastHit2D hitRight = Physics2D.Raycast(tokenToAdd.prefab.transform.position + tokenToAdd.prefab.transform.right * rayCastDistance, tokenToAdd.prefab.transform.right, rayCastDistance, model.layer);
+            if (hitRight.collider != null)
+            {
+                Model.Model.Token rightToken = LookForToken(hitRight.collider.gameObject);
+
+                if (hitRight.collider != null && rightToken.prefab.CompareTag(tokenToAdd.prefab.tag))
+                {
+                    //Same but in the right one
+                    model.tokensSelection.Add(rightToken);
+                    GoOverGridRight(rightToken);
+                }
+                else if (model.minChainLength <= model.tokensSelection.Count)
+                {
+                    DestroyTokens();
+                    if (!model.firstInstantiateFinalised)
+                    {
+                        model.score += model.tokensSelection.Count * model.scoreMultiplier;
+                    }
+                    model.tokensSelection.Clear();
+                    model.instantiateFinalised = true;
+                }
+                else if (model.tokensSelection.Count < model.minChainLength)
+                {
+                    foreach (var token in model.tokensSelection)
+                    {
+                        if (token.prefab != null)
+                        {
+                            token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                        }
+                    }
+                    model.tokensSelection.Clear();
+                }
+            }
+            else if (model.minChainLength <= model.tokensSelection.Count)
+            {
+                DestroyTokens();
+                if (!model.firstInstantiateFinalised)
+                {
+                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
+                }
+                model.tokensSelection.Clear();
+                model.instantiateFinalised = true;
+            }
+            else if (model.tokensSelection.Count < model.minChainLength)
+            {
+                foreach (var token in model.tokensSelection)
+                {
+                    if (token.prefab != null)
+                    {
+                        token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    }
+                }
+                model.tokensSelection.Clear();
+            }
+        }
+        private void GoOverGridUp(Model.Model.Token tokenToAdd)
+        {
+            //model.instantiateFinalised&&stopmoving
             //Recursive function that calls itself whenever every right or up token has the same type of the first one
             //parameters:
             //i=y
             //j=x
-            if ((model.tokens[i, j].prefab != null) &&i < model.gridHeight-1 && (model.tokens[i + 1, j].prefab != null)&& model.tokens[i, j].prefab.CompareTag(model.tokens[i + 1, j].prefab.tag))
+            float rayCastDistance=2f;
+            //Checks up position
+            RaycastHit2D hitUp= Physics2D.Raycast(tokenToAdd.prefab.transform.position + tokenToAdd.prefab.transform.up * rayCastDistance, tokenToAdd.prefab.transform.up, rayCastDistance, model.layer);
+            if (hitUp.collider != null)
             {
-                //Checks up position
-                model.tokens[i + 1, j].prefab.GetComponent<SpriteRenderer>().color = Color.red;
-                model.tokensSelection.Add(model.tokens[i + 1, j]);
-                GoOverGrid(i + 1, j);
+                Model.Model.Token upToken = LookForToken(hitUp.collider.gameObject);
+
+                if (hitUp.collider != null && upToken.prefab.CompareTag(tokenToAdd.prefab.tag))
+                {
+                    model.tokensSelection.Add(upToken);
+                    GoOverGridUp(upToken);
+                }
+                else if (model.minChainLength <= model.tokensSelection.Count)
+                {
+                    //If there are no many tokens up and there are more than the minimum chain combination  it destroys every token in the list 
+                    DestroyTokens();
+                    if (!model.firstInstantiateFinalised)
+                    {
+                        //If is not the first game match
+                        model.score += model.tokensSelection.Count * model.scoreMultiplier;
+                    }
+                    model.tokensSelection.Clear();
+                    //Found a combination so it has to do it again becouse it spawns random types
+                    model.instantiateFinalised = true;
+                }
+                else if (model.tokensSelection.Count < model.minChainLength)
+                {
+                    foreach (var token in model.tokensSelection)
+                    {
+                        if (token.prefab != null)
+                        {
+                            token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                        }
+                    }
+                    model.tokensSelection.Clear();
+                }
             }
             else if (model.minChainLength <= model.tokensSelection.Count)
             {
@@ -54,37 +174,9 @@ namespace Match3.Controller
                 }
                 model.tokensSelection.Clear();
                 //Found a combination so it has to do it again becouse it spawns random types
-                model.instantiateFinalised  = true;
-            }
-            if ((model.tokens[i, j].prefab != null) && j < model.gridWidth-1 && (model.tokens[i, j + 1].prefab != null)&& model.tokens[i, j].prefab.CompareTag(model.tokens[i, j + 1].prefab.tag))
-            {   
-                //Same but in the right one
-                model.tokens[i, j+1].prefab.GetComponent<SpriteRenderer>().color = Color.red;
-                model.tokensSelection.Add(model.tokens[i, j + 1]);
-                GoOverGrid(i, j + 1);
-            }
-            else if (model.minChainLength <= model.tokensSelection.Count)
-            {
-                DestroyTokens();
-                if (!model.firstInstantiateFinalised)
-                {
-                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
-                }
-                model.tokensSelection.Clear();
                 model.instantiateFinalised = true;
             }
-            else if (model.tokensSelection.Count > 1)
-            {   //If didnt get a match it clear the list
-                foreach (var token in model.tokensSelection)
-                {
-                    if (token.prefab != null)
-                    {
-                        token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
-                    }
-                }
-                model.tokensSelection.Clear();
-            }
-            else
+            else if (model.tokensSelection.Count < model.minChainLength)
             {
                 foreach (var token in model.tokensSelection)
                 {
@@ -155,7 +247,14 @@ namespace Match3.Controller
         {
             if (model.instantiateFinalised)//If there are no matches
             {
-                CheckIfIsMatches();
+                if (StopMoving())
+                {
+                    CheckIfIsMatches();
+                }
+                else
+                {
+
+                }
             }
             else if (!model.firstInstantiateFinalised)// If there are no matches and its not instantiating/despawning
             {
@@ -168,6 +267,20 @@ namespace Match3.Controller
             //parameters:
             //takenObject= object selected
             return model.tokensSelection.Exists(o => o.prefab == tokenObject); 
+        }
+        Model.Model.Token LookForToken(GameObject token)
+        {
+            for (int i = 0; i < model.gridHeight; i++)
+            {
+                for (int j = 0; j < model.gridWidth; j++)
+                {
+                    if (model.tokens[i, j].prefab.transform.position == token.transform.position)
+                    {
+                        return model.tokens[i, j];
+                    }
+                }
+            }
+            return model.tokens[0, 0];
         }
         private void AddToList()
         {
@@ -202,12 +315,12 @@ namespace Match3.Controller
             //parameters:
             //takenObject= object selected
             //input= User=true,IA= false
-            bool sameY = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 0;
-            bool sameX = tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 0;
-            bool left =tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == -1;
-            bool right = tokenObject.transform.position.x - model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 1;
-            bool up = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 1;
-            bool down = tokenObject.transform.position.y - model.tokensSelection[model.tokensSelection.Count - 1].pos.y == -1;
+            bool sameY = (int)tokenObject.transform.position.y - (int)model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 0;
+            bool sameX = (int)tokenObject.transform.position.x - (int)model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 0;
+            bool left = (int)tokenObject.transform.position.x - (int)model.tokensSelection[model.tokensSelection.Count - 1].pos.x == -1;
+            bool right = (int)tokenObject.transform.position.x - (int)model.tokensSelection[model.tokensSelection.Count - 1].pos.x == 1;
+            bool up = (int)tokenObject.transform.position.y - (int)model.tokensSelection[model.tokensSelection.Count - 1].pos.y == 1;
+            bool down = (int)tokenObject.transform.position.y - (int)model.tokensSelection[model.tokensSelection.Count - 1].pos.y == -1;
             bool topLeft=left&&up;
             bool topRight=right&&up;
             bool buttomLeft=left&&down;
@@ -269,7 +382,7 @@ namespace Match3.Controller
                             //* I tryied to GameObject==GameObject but it doesnt have the proper references so i checked for position
                             Destroy(model.tokens[i, j].prefab);
                             //The pos is stored if in the future other dev wants to make the tokens fall and using a grid
-                            model.tokens[i, j].prefab = Instantiate(model.tokenPrefabs[(int)InstantiateNewID()], model.tokens[i, j].pos, Quaternion.identity);
+                            model.tokens[i, j].prefab = Instantiate(model.tokenPrefabs[(int)InstantiateNewID()], new Vector2(model.tokens[i, j].pos.x, model.tokens[i, j].pos.y+model.gridHeight), Quaternion.identity);
                             model.tokens[i, j].prefab.transform.parent = view.transform;
                         }
                     }

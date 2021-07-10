@@ -11,6 +11,7 @@ TagManager:
   - Pink
   - White
   - Brown
+  - Placeholder
   layers:
   - Default
   - TransparentFX
