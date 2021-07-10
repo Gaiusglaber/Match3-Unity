@@ -12,7 +12,6 @@ namespace Match3.Model
             public Vector2 pos;
             public TOKEN_TYPE type;
         }
-        public IEnumerator actualCoroutine = null;
         [SerializeField] public int minMovesAudioPitch = 5;
         [SerializeField] public AudioSource audioSrc;
         [SerializeField] public AudioClip wrongInput, goodInput,selected;

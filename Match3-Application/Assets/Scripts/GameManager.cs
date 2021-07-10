@@ -25,10 +25,10 @@ namespace Match3
         public void EndGame()
         {
             /**/
-            model.actualCoroutine = null;
             StopAnimation();
             model.moves = model.initialMoves;
-            model.firstInstantiateFinalised = false;
+            model.instantiateFinalised = false;
+            model.firstInstantiateFinalised = true;
             model.audioSrc.pitch = 1;
             StartCoroutine(DeleteGrid());
         }

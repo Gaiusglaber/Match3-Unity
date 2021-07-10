@@ -12,55 +12,66 @@ namespace Match3.Controller
         }
         void CheckIfIsMatches()
         {
-            bool areMatches = false;
-            if (model.instantiateFinalised&&model.firstInstantiateFinalised)
+            model.instantiateFinalised = false;
+            for (int i = 0; i < model.gridHeight; i++)
             {
-                for (int i = 0; i < model.gridHeight; i++)
+                for (int j = 0; j < model.gridWidth; j++)
                 {
-                    for (int j = 0; j < model.gridWidth; j++)
+                    if (!model.instantiateFinalised&& model.tokens[i, j].prefab!=null)
                     {
                         model.tokensSelection.Add(model.tokens[i, j]);
-                        GoOverGrid(i, j,ref areMatches);
+                        model.tokens[i, j].prefab.GetComponent<SpriteRenderer>().color = Color.red;
+                        GoOverGrid(i, j);
                     }
                 }
-                model.instantiateFinalised = false;
             }
-            if (areMatches)
+            if (!model.instantiateFinalised)
             {
-                model.instantiateFinalised = true;
+                model.firstInstantiateFinalised = false;
             }
         }
-        private void GoOverGrid(int i,int j,ref bool areMatches)
+        private void GoOverGrid(int i,int j)
         {
-            if (i < model.gridHeight-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i + 1, j].prefab.tag))
+            if ((model.tokens[i, j].prefab != null) &&i < model.gridHeight-1 && (model.tokens[i + 1, j].prefab != null)&& model.tokens[i, j].prefab.CompareTag(model.tokens[i + 1, j].prefab.tag))
             {
                 model.tokens[i + 1, j].prefab.GetComponent<SpriteRenderer>().color = Color.red;
                 model.tokensSelection.Add(model.tokens[i + 1, j]);
-                GoOverGrid(i + 1, j,ref areMatches);
+                GoOverGrid(i + 1, j);
             }
             else if (model.minChainLength <= model.tokensSelection.Count)
             {
                 DestroyTokens();
+                if (!model.firstInstantiateFinalised)
+                {
+                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
+                }
                 model.tokensSelection.Clear();
-                areMatches = true;
+                model.instantiateFinalised  = true;
             }
-            if (j < model.gridWidth-1&& model.tokens[i, j].prefab.CompareTag(model.tokens[i, j + 1].prefab.tag))
+            if ((model.tokens[i, j].prefab != null) && j < model.gridWidth-1 && (model.tokens[i, j + 1].prefab != null)&& model.tokens[i, j].prefab.CompareTag(model.tokens[i, j + 1].prefab.tag))
             {
                 model.tokens[i, j+1].prefab.GetComponent<SpriteRenderer>().color = Color.red;
                 model.tokensSelection.Add(model.tokens[i, j + 1]);
-                GoOverGrid(i, j + 1,ref areMatches);
+                GoOverGrid(i, j + 1);
             }
             else if (model.minChainLength <= model.tokensSelection.Count)
             {
                 DestroyTokens();
+                if (!model.firstInstantiateFinalised)
+                {
+                    model.score += model.tokensSelection.Count * model.scoreMultiplier;
+                }
                 model.tokensSelection.Clear();
-                areMatches = true;
+                model.instantiateFinalised = true;
             }
             else if (model.tokensSelection.Count > 1)
             {
                 foreach (var token in model.tokensSelection)
                 {
-                    token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    if (token.prefab != null)
+                    {
+                        token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    }
                 }
                 model.tokensSelection.Clear();
             }
@@ -68,7 +79,10 @@ namespace Match3.Controller
             {
                 foreach (var token in model.tokensSelection)
                 {
-                    token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    if (token.prefab != null)
+                    {
+                        token.prefab.GetComponent<SpriteRenderer>().color = Color.white;
+                    }
                 }
                 model.tokensSelection.Clear();
             }
@@ -126,7 +140,7 @@ namespace Match3.Controller
             {
                 CheckIfIsMatches();
             }
-            if (!model.instantiateFinalised&&model.firstInstantiateFinalised)
+            else if (!model.firstInstantiateFinalised)
             {
                 InputSelection();
             }
@@ -206,50 +220,21 @@ namespace Match3.Controller
         }
         void DestroyTokens()
         {
-            foreach (var token in model.tokens)
+            for (int i = 0; i < model.gridHeight; i++)
             {
-                foreach (var tokenList in model.tokensSelection)
+                for (int j = 0; j < model.gridWidth; j++)
                 {
-                    if (token.pos == tokenList.pos)
+                    for (int t = 0; t < model.tokensSelection.Count; t++)
                     {
-                        Destroy(token.prefab);
-                        token.prefab=Instantiate(model.tokenPrefabs[(int)InstantiateNewID()],token.pos,Quaternion.identity);
-                        token.prefab.transform.parent = view.transform;
+                        if (model.tokens[i,j]!=null&&(model.tokens[i, j].prefab.transform.position == model.tokensSelection[t].prefab.transform.position))
+                        {
+                            Destroy(model.tokens[i, j].prefab);
+                            model.tokens[i, j].prefab = Instantiate(model.tokenPrefabs[(int)InstantiateNewID()], model.tokens[i, j].pos, Quaternion.identity);
+                            model.tokens[i, j].prefab.transform.parent = view.transform;
+                        }
                     }
                 }
             }
         }
-        /*
-        void DeleteUpwards(int i,int j)
-        {
-            int nullCount = 0;
-            while (i< model.gridHeight)
-            {
-                if (model.tokens[i,j].prefab != null)
-                {
-                    model.tokens[i,j].pos = new Vector2(j,i-nullCount);
-                    model.tokens[i,j].prefab.transform.position = model.tokens[i,j].pos;
-                    model.tokens[i,j].prefab.name = i-nullCount + "," + j;
-                    model.tokens[i, j] = model.tokens[i - nullCount, j];
-                }
-                else
-                {
-                    nullCount++;
-                }
-                i++;
-            }
-        }
-        void SpawnNewToken(Model.Model.Token tokenDestroyed,int j)
-        {
-            float yPos = 0;
-
-            tokenDestroyed.prefab = new GameObject();
-            tokenDestroyed.pos = new Vector2(tokenDestroyed.pos.x, model.gridHeight - 1);
-            tokenDestroyed.type = InstantiateNewID();
-            tokenDestroyed.prefab = Instantiate(model.tokenPrefabs[(int)tokenDestroyed.type], tokenDestroyed.pos, Quaternion.identity);
-            tokenDestroyed.prefab.name = tokenDestroyed.pos.y + "," + tokenDestroyed.pos.x;
-            tokenDestroyed.prefab.transform.parent = view.transform;
-            model.tokens[model.gridHeight - 1, j] = tokenDestroyed;
-        }*/
     }
 }

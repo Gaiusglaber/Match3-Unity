@@ -10,10 +10,12 @@ namespace Match3.View
         [SerializeField] public TMPro.TMP_Text movesText;
         [SerializeField] public TMPro.TMP_Text score;
         [SerializeField] public TMPro.TMP_Text moves;
+        [SerializeField] public TMPro.TMP_Text version;
         private void Update()
         {
             scoreText.text = model.score.ToString();
             movesText.text = model.moves.ToString();
+            version.text = Application.version;
         }
     }
 }
