@@ -214,6 +214,7 @@ namespace Match3.Controller
                     {
                         Destroy(token.prefab);
                         token.prefab=Instantiate(model.tokenPrefabs[(int)InstantiateNewID()],token.pos,Quaternion.identity);
+                        token.prefab.transform.parent = view.transform;
                     }
                 }
             }

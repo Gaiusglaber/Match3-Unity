@@ -150,8 +150,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 818099515}
+  m_Children: []
   m_Father: {fileID: 574425235}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -197,14 +196,14 @@ RectTransform:
   m_GameObject: {fileID: 402025757}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.84, y: 1.78, z: 1}
   m_Children: []
   m_Father: {fileID: 1438100170}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 109.5, y: -29}
+  m_AnchoredPosition: {x: 199, y: -29}
   m_SizeDelta: {x: 209, y: 46}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &402025759
@@ -337,7 +336,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0.00012207031}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &483921856
@@ -419,7 +418,7 @@ RectTransform:
   m_GameObject: {fileID: 503643975}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.84, y: 1.78, z: 1}
   m_Children: []
   m_Father: {fileID: 1438100170}
   m_RootOrder: 0
@@ -458,8 +457,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4285295842
+  m_fontColor: {r: 0.8867924, g: 0.4224813, b: 0.4224813, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -641,7 +640,7 @@ Transform:
   - {fileID: 156041106}
   - {fileID: 686861933}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &574425236
 MonoBehaviour:
@@ -682,7 +681,7 @@ RectTransform:
   m_GameObject: {fileID: 634677861}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.84, y: 1.78, z: 1}
   m_Children: []
   m_Father: {fileID: 1438100170}
   m_RootOrder: 2
@@ -721,8 +720,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284014807
-  m_fontColor: {r: 0.84197456, g: 0.8773585, b: 0.34349412, a: 1}
+    rgba: 4278193359
+  m_fontColor: {r: 0.8113208, g: 0.046199612, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -839,6 +838,8 @@ MonoBehaviour:
   controller: {fileID: 156041107}
   scoreText: {fileID: 634677863}
   movesText: {fileID: 402025759}
+  score: {fileID: 503643977}
+  moves: {fileID: 2032981649}
 --- !u!1 &818099514
 GameObject:
   m_ObjectHideFlags: 0
@@ -863,11 +864,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818099514}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 156041106}
+  m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &818099516
@@ -987,7 +988,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_TargetDisplay: 0
 --- !u!1 &1764976279
 GameObject:
@@ -1053,7 +1054,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1872762666
 GameObject:
@@ -1115,7 +1116,7 @@ MonoBehaviour:
     m_Bits: 64
   score: 0
   scoreMultiplier: 15
-  initialMoves: 3
+  initialMoves: 20
   moves: 10
   gameOver: 0
   control: 0
@@ -1124,7 +1125,7 @@ MonoBehaviour:
   instantiateFinalised: 0
   firstInstantiateFinalised: 0
   gridHeight: 8
-  gridWidth: 4
+  gridWidth: 5
   tilePrefab: {fileID: 1453699946768273391, guid: bacddd2cfdaaa6d498c76ffff55d2293, type: 3}
   tokenPrefabs:
   - {fileID: 6197745734021185155, guid: f45fbe2eb0c65ff4989472d731eea38b, type: 3}
@@ -1147,7 +1148,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 0.261
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1256,14 +1257,14 @@ RectTransform:
   m_GameObject: {fileID: 2032981647}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.84, y: 1.78, z: 1}
   m_Children: []
   m_Father: {fileID: 1438100170}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 109.5, y: 0}
+  m_AnchoredPosition: {x: 199, y: 0}
   m_SizeDelta: {x: 209, y: 46}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &2032981649
@@ -1295,8 +1296,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4294940566
+  m_fontColor: {r: 0.5896226, g: 0.5916701, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

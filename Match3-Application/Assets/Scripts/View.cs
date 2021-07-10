@@ -8,6 +8,8 @@ namespace Match3.View
     {
         [SerializeField] public TMPro.TMP_Text scoreText; //onlty reference to ui elements
         [SerializeField] public TMPro.TMP_Text movesText;
+        [SerializeField] public TMPro.TMP_Text score;
+        [SerializeField] public TMPro.TMP_Text moves;
         private void Update()
         {
             scoreText.text = model.score.ToString();

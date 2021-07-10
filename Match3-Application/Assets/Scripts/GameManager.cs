@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 namespace Match3
 {
     public class GameManager : ComponentsModelViewController
@@ -27,7 +27,6 @@ namespace Match3
             /**/
             model.actualCoroutine = null;
             StopAnimation();
-            model.score = 0;
             model.moves = model.initialMoves;
             model.firstInstantiateFinalised = false;
             model.audioSrc.pitch = 1;
@@ -58,7 +57,15 @@ namespace Match3
         }
         IEnumerator RestartGame()
         {
+            Vector3 scoreTextPos= view.scoreText.rectTransform.anchoredPosition;
+            Vector3 scorePos= view.score.rectTransform.anchoredPosition;
+            GameObject canvas = GameObject.FindGameObjectWithTag("Canvas");
+            view.scoreText.rectTransform.anchoredPosition = -(new Vector2(canvas.GetComponent<CanvasScaler>().referenceResolution.x/2.5f,canvas.GetComponent<CanvasScaler>().referenceResolution.y));
+            view.score.rectTransform.anchoredPosition = -((new Vector2(canvas.GetComponent<CanvasScaler>().referenceResolution.x / 2.5f, canvas.GetComponent<CanvasScaler>().referenceResolution.y)) - new Vector2(0,view.scoreText.rectTransform.sizeDelta.y));
             yield return new WaitForSeconds(3);
+            model.score = 0;
+            view.score.rectTransform.anchoredPosition = scorePos;
+            view.scoreText.rectTransform.anchoredPosition = scoreTextPos;
             model.LoadData();
             yield return null;
         }
