@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/*
+    View class 
+    Manages the game’s UI
+*/
 namespace Match3.View 
-{ // the view class i understood it as something similar as a UIManager becouse Unity already "draws" all elements in scene 
+{
     public class View : ComponentsModelViewController
     {
-        [SerializeField] public TMPro.TMP_Text scoreText; //onlty reference to ui elements
+        [SerializeField] public TMPro.TMP_Text scoreText; //Only reference to ui elements NOT FOR STORING DATA
         [SerializeField] public TMPro.TMP_Text movesText;
         [SerializeField] public TMPro.TMP_Text score;
         [SerializeField] public TMPro.TMP_Text moves;
