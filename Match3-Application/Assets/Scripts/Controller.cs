@@ -112,6 +112,10 @@ namespace Match3.Controller
                 UpdateTokenPos();
                 model.instantiateFinalised = false;
             }
+            else
+            {
+                model.instantiateFinalised = true;
+            }
         }
         bool StopMoving()
         {
