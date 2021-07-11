@@ -33,7 +33,7 @@ namespace Match3
             StopAnimation();
             model.moves = model.initialMoves;
             model.instantiateFinalised = false;
-            model.firstInstantiateFinalised = true;
+            model.firstInstantiateFinalised = false;
             model.audioSrc.pitch = 1;
             StartCoroutine(DeleteGrid());
         }

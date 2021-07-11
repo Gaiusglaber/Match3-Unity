@@ -22,7 +22,9 @@ namespace Match3.Model
             public GameObject prefab;
             public Vector2 pos;
             public TOKEN_TYPE type;
+            public bool toDestroy=false;
         }
+        [SerializeField] public IEnumerator actualCoroutine=null;
         //Defines minimum movements for when the audio pitch goes up *User config*
         [SerializeField] public int minMovesAudioPitch = 5;
         //Stores the AudioSource component of the model GameObject
@@ -37,6 +39,8 @@ namespace Match3.Model
         [SerializeField] public Vector2 firstTouchPosition;
         //It stores the token that the user selected
         [SerializeField] public List<Token> tokensSelection= new List<Token>();
+
+        [SerializeField] public List<Token> tokensInput = new List<Token>();
         //Has the layer of the token for input
         [SerializeField] public LayerMask layer;
         //Stores player score
@@ -56,6 +60,7 @@ namespace Match3.Model
         //Flag for first token instantiaton
         [SerializeField] public bool firstInstantiateFinalised = false;
         //Defines max token types
+        [SerializeField] public bool canMove = false;
         [SerializeField] public enum TOKEN_TYPE {ORANGE,BLUE,RED,PINK,WHITE,BROWN }
         //Defines the amount of columns *User config*
         [SerializeField] [Range(5,8)] public int gridHeight = 10;

@@ -1254,12 +1254,11 @@ MonoBehaviour:
   scoreMultiplier: 15
   initialMoves: 10
   moves: 10
-  gameOver: 0
-  control: 0
   user: 1
   IA: 0
   instantiateFinalised: 0
-  firstInstantiateFinalised: 1
+  firstInstantiateFinalised: 0
+  canMove: 0
   gridHeight: 8
   gridWidth: 5
   tilePrefab: {fileID: 1453699946768273391, guid: bacddd2cfdaaa6d498c76ffff55d2293, type: 3}
