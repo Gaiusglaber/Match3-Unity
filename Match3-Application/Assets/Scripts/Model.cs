@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 /*
     Model class 
     Contains all the game data
@@ -17,14 +18,12 @@ namespace Match3.Model
             - pos: contains the position for when the prefab is deleted
             - type: stores the type of each token
         */
+        public const int maxTokens = 5;
         public class Token
         {
             public GameObject prefab;
-            public Vector2 pos;
             public TOKEN_TYPE type;
-            public bool toDestroy=false;
         }
-        [SerializeField] public IEnumerator actualCoroutine=null;
         //Defines minimum movements for when the audio pitch goes up *User config*
         [SerializeField] public int minMovesAudioPitch = 5;
         //Stores the AudioSource component of the model GameObject
@@ -71,7 +70,7 @@ namespace Match3.Model
         //Stores the tiles placeholder
         [SerializeField] public GameObject tilePrefab;
         //Stores all the token prefabs *User config*
-        [SerializeField] public GameObject[] tokenPrefabs;
+        [SerializeField] public GameObject tokenPrefab;
         private void Start()
         {
             //Instantiate all model data
@@ -130,12 +129,51 @@ namespace Match3.Model
             //i=y
             //j=x
             Token token= new Token();
-            token.pos = new Vector2(j, i+gridHeight);
-            token.type = (TOKEN_TYPE)Random.Range(0, tokenPrefabs.Length);
-            token.prefab = Instantiate(tokenPrefabs[(int)token.type], token.pos, Quaternion.identity);
+            token.type = (TOKEN_TYPE)Random.Range(0, maxTokens);
+            token.prefab = Instantiate(tokenPrefab, new Vector2(j, i), Quaternion.identity);
+            InstantiateType(ref token);
             token.prefab.transform.parent = view.transform;
             token.prefab.name = i + "," + j;
             tokens[i,j]=token;
+        }
+        public void InstantiateType(ref Token token)
+        {
+            switch (token.type)
+            {
+                case TOKEN_TYPE.BLUE:
+                    token.prefab.tag = "Blue";
+                    token.prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy2");
+                    token.prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy2");
+                    break;
+                case TOKEN_TYPE.BROWN:
+                    token.prefab.tag = "Brown";
+                    token.prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy6");
+                    token.prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy6");
+                    break;
+                case TOKEN_TYPE.ORANGE:
+                    token.prefab.tag = "Orange";
+                    token.prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy1");
+                    token.prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy1");
+                    break;
+                case TOKEN_TYPE.PINK:
+                    token.prefab.tag = "Pink";
+                    token.prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy4");
+                    token.prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy4");
+                    break;
+                case TOKEN_TYPE.RED:
+                    token.prefab.tag = "Red";
+                    token.prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy3");
+                    token.prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy3");
+                    break;
+                case TOKEN_TYPE.WHITE:
+                    token.prefab.tag = "White";
+                    token.prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy4");
+                    token.prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy4");
+                    break;
+                default:
+                    Debug.LogWarning("Invalid token type!");
+                    break;
+            }
         }
     }
 }

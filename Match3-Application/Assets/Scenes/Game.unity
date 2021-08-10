@@ -1262,13 +1262,7 @@ MonoBehaviour:
   gridHeight: 8
   gridWidth: 5
   tilePrefab: {fileID: 1453699946768273391, guid: bacddd2cfdaaa6d498c76ffff55d2293, type: 3}
-  tokenPrefabs:
-  - {fileID: 6197745734021185155, guid: f45fbe2eb0c65ff4989472d731eea38b, type: 3}
-  - {fileID: 7340610745546475706, guid: 76a4b96570f570a4b946f6b04a22df50, type: 3}
-  - {fileID: 7191060540622288475, guid: 553c49ad957578a49b6a5a49c4050c09, type: 3}
-  - {fileID: 7926790389865217849, guid: 57011b6acc9ab454c810675ac98d4e46, type: 3}
-  - {fileID: 4896195147291034428, guid: 063f275274f08374fa06b0970554a0df, type: 3}
-  - {fileID: 5761940653482401842, guid: 7c5d7e6905e28af4e9ea2ec810a4e5d7, type: 3}
+  tokenPrefab: {fileID: 6197745734021185155, guid: e1d8500e85587b54b83e47e82da4ddf4, type: 3}
 --- !u!82 &1872762669
 AudioSource:
   m_ObjectHideFlags: 0
