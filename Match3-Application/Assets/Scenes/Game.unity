@@ -988,6 +988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac9305afa0382654aa3426e4877bfb3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  modelGameplay: {fileID: 1829140538}
   scoreText: {fileID: 634677863}
   movesText: {fileID: 402025759}
   score: {fileID: 503643977}

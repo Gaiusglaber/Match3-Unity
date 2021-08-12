@@ -25,7 +25,7 @@ namespace Match3.Model
         public int Height;
         [Range(0,1)]public float spawnTime;
         public int minChainLength;
-        [NonSerialized] public int maxTokens = (int)Enum.GetValues(typeof(Token.TOKEN_TYPE)).Cast<Token.TOKEN_TYPE>().Max();
+        [NonSerialized] public int maxTokens = (int)Enum.GetValues(typeof(Token.TOKEN_TYPE)).Cast<Token.TOKEN_TYPE>().Max()+1;
         public int initialMoves;
         [NonSerialized] public int moves;
         [NonSerialized] public int score;

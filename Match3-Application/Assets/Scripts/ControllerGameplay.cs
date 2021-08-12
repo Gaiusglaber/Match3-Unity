@@ -31,6 +31,7 @@ namespace Match3.Controller
         }
         private void Start()
         {
+            modelGameplay.moves = modelGameplay.initialMoves;
             inputController.OnClicked += AddTokenToList;
             inputController.OnReleased += ClearList;
             InstantiateGrid();
@@ -44,13 +45,13 @@ namespace Match3.Controller
                 {
                     Destroy(token.Prefab);
                 }
+                modelGameplay.moves--;
+                modelGameplay.score += modelInput.tokensSelection.Count * modelGameplay.scoreMultiplier;
             }
             foreach (var token in modelInput.tokensSelection)
             {
                 token.Prefab.GetComponent<SpriteRenderer>().color = Color.white;
             }
-            modelGameplay.moves--;
-            modelGameplay.score += modelInput.tokensSelection.Count * modelGameplay.scoreMultiplier;
             if (modelGameplay.moves == 0)//Gameover?
             {
                 OnGameOver?.Invoke();
@@ -140,8 +141,8 @@ namespace Match3.Controller
                     break;
                 case Model.Token.TOKEN_TYPE.WHITE:
                     token.Prefab.tag = "White";
-                    token.Prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy4");
-                    token.Prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy4");
+                    token.Prefab.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Art/Textures/Icons/candy5");
+                    token.Prefab.GetComponent<Animator>().runtimeAnimatorController = Resources.Load<AnimatorOverrideController>("Art/Animation/Overridecandy5");
                     break;
                 default:
                     Debug.LogWarning("Invalid token type!");
